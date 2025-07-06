@@ -3,7 +3,7 @@ from django.urls import reverse
 from ..models import Ticket
 
 @pytest.mark.django_db
-def test_ticket_crud_create(client):
+def test_ticket_crud_create(authenticated_client):
     """Test ticket viewset creating tickets."""
     data = {
         'title': 'test',
@@ -11,46 +11,34 @@ def test_ticket_crud_create(client):
         'status': 'D'
     }
     url = reverse('tickets-list')
-    response = client.post(url, data)
+    response = authenticated_client.post(url, data)
     assert response.status_code == 201
     assert response.data['title'] == data['title']
     assert Ticket.objects.count() == 1
 
 @pytest.mark.django_db
-def test_ticket_crud_retrieve_list(client):
+def test_ticket_crud_retrieve_list(authenticated_client, test_ticket):
     """Test ticket viewset retrieving list of tickets."""
     # First create ticket object
-    ticket = Ticket.objects.create(
-        title='Test title',
-        body='Test body',
-        status='D'
-    )
+    ticket = test_ticket
     url = reverse('tickets-list')
-    response = client.get(url)
+    response = authenticated_client.get(url)
     assert response.status_code == 200
 
 @pytest.mark.django_db
-def test_ticket_crud_retrieve_detail(client):
+def test_ticket_crud_retrieve_detail(authenticated_client, test_ticket):
     """Test ticket viewset retrieving single ticket."""
     # First create ticket object
-    ticket = Ticket.objects.create(
-        title='Test title',
-        body='Test body',
-        status='D'
-    )
+    ticket = test_ticket
     url = reverse('tickets-detail', args=[ticket.id])
-    response = client.get(url)
+    response = authenticated_client.get(url)
     assert response.status_code == 200
 
 @pytest.mark.django_db
-def test_ticket_crud_update_put_patch(client):
+def test_ticket_crud_update_put_patch(authenticated_client, test_ticket):
     """Test ticket viewset fully and partially updating ticket."""
     # First create ticket object
-    ticket = Ticket.objects.create(
-        title='Test title',
-        body='Test body',
-        status='D'
-    )
+    ticket = test_ticket
 
     # Put test
     update = {
@@ -59,28 +47,24 @@ def test_ticket_crud_update_put_patch(client):
         'status': 'O',
     }
     url = reverse('tickets-detail', args=[ticket.id])
-    response = client.put(url, update, content_type='application/json')
+    response = authenticated_client.put(url, update, content_type='application/json')
     assert response.status_code == 200
     ticket.refresh_from_db()
     assert ticket.title == update['title']
 
     # Patch test
-    response = client.patch(url, {'status': 'C'}, content_type='application/json')
+    response = authenticated_client.patch(url, {'status': 'C'}, content_type='application/json')
     assert response.status_code == 200
     ticket.refresh_from_db()
     assert ticket.status == 'C'
 
 @pytest.mark.django_db
-def test_ticket_crud_delete(client):
+def test_ticket_crud_delete(authenticated_client, test_ticket):
     """Test ticket viewset deleting ticket."""
     # First create ticket object
-    ticket = Ticket.objects.create(
-        title='Test title',
-        body='Test body',
-        status='D'
-    )
+    ticket = test_ticket
     url = reverse('tickets-detail', args=[ticket.id])
-    response = client.delete(url)
+    response = authenticated_client.delete(url)
     assert response.status_code == 204
     assert Ticket.objects.count() == 0
 
