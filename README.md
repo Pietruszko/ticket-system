@@ -94,3 +94,55 @@ The app will be available at `http://localhost:4200/`.
 
 ---
 
+## API Overview
+
+The backend provides a RESTful API for managing tickets using Django REST Framework. It includes user-based access control, admin-specific views, and custom serialization.
+
+#### Authentication
+
+* `POST /api/login/` – Obtain access and refresh token via username and password
+* `POST /api/token/refresh/` – Refresh JWT token
+
+> Requires token authentication (`Authorization: Bearer <access_token>`) for all endpoints below.
+
+#### Ticket Endpoints
+
+* `GET /api/tickets/` – List tickets
+  * Regular users see their own tickets
+  * Staff users see all tickets (except those marked as drafted)
+* `POST /api/tickets/` – Create a new ticket
+  * Draft option for editing later and Open for opening ticket
+* `GET /api/tickets/<id>/` – Retrieve a ticket
+* `PUT /api/tickets/<id>/` – Update title/body/status
+* `DELETE /api/tickets/<id>/` – Soft delete ticket
+
+#### Admin-Specific Endpoint
+
+* `GET /admin/tickets/<id>/` – View ticket details via API (admin-only, used in admin panel)
+
+#### Permissions
+
+* `IsAuthenticated` for general ticket API
+* `IsAdminUser` for the staff ticket view
+
+---
+
+### Admin Panel
+
+The Django admin panel includes a customized view with a **"View Ticket"** link redirecting to the custom API detail view (`/admin/tickets/<id>/`), allowing staff to inspect ticket data via JSON.
+
+---
+
+### Serializers
+
+* `TicketSerializer` includes dynamic fields:
+
+  * For staff: author details included
+  * For regular users: limited data (no ID or author)
+* Status transitions are validated to prevent:
+
+  * Setting initial ticket as closed/in-progress
+  * Updating closed tickets
+  * Changing draft directly to closed/in-progress
+
+---
