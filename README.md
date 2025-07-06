@@ -1,4 +1,31 @@
+### Project Summary
+
+This is an implementation of the recruitment task "Mini ticket system". The project consists of a Django REST Framework backend and an Angular frontend (in progress).
+
+#### Implemented Features (Backend):
+
+* User authentication with token (static token for admin)
+* Create a ticket (`POST /api/tickets/`)
+* List user tickets (`GET /api/tickets/`)
+* View ticket details, update, and delete (`GET/PUT/DELETE /api/tickets/<id>/`)
+* Ticket model includes: author, title, description, creation date, updated date, status
+* Token-based permission for the "admin" user
+* Customized admin panel
+* Basic test suite using `pytest`
+* CORS enabled for frontend integration
+
+#### Frontend (Partial):
+
+* Angular frontend initialized
+* Implemented login screen with token input
+* Frontend connects to backend at `http://localhost:8000` via CORS
+* No ticket-related views implemented yet
+
+---
+
 ## 🛠 Installation
+
+---
 
 ### Backend
 
