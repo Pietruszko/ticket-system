@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 class Ticket(models.Model):
     class Status(models.TextChoices):
@@ -7,6 +8,11 @@ class Ticket(models.Model):
         IN_PROGRESS = 'I', 'In progress'
         CLOSED = 'C', 'Closed'
 
+    author = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='tickets',
+    )
     title = models.CharField(max_length=255)
     body = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
