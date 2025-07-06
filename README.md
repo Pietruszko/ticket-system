@@ -1,4 +1,6 @@
-### Project Summary
+## Project Summary
+
+---
 
 This is an implementation of the recruitment task "Mini ticket system". The project consists of a Django REST Framework backend and an Angular frontend (in progress).
 
@@ -23,7 +25,7 @@ This is an implementation of the recruitment task "Mini ticket system". The proj
 
 ---
 
-## 🛠 Installation
+## Installation
 
 ---
 
