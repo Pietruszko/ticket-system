@@ -11,7 +11,14 @@ class TicketViewSet(ModelViewSet):
     ordering = ['-created_at']
 
     def get_queryset(self):
-        return super().get_queryset()
+        qs = super().get_queryset().select_related('author')
+
+        # For staff
+        if self.request.user.is_staff:
+            return qs.exclude(status='D')
+        
+        # For regular users
+        return qs.filter(author=self.request.user)
 
 class AdminTicketDetail(generics.RetrieveAPIView):
     queryset = Ticket.objects.all()
